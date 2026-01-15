@@ -1,40 +1,42 @@
-const fileInput = document.getElementById('file-input');
-const fileList = document.getElementById('file-list');
+let diaSeleccionado = "";
 
-// 1. Función que "hace clic" en el sistema de archivos
-function openPicker(type) {
-    fileInput.accept = type; // Filtra por imagen, video o audio
-    fileInput.click(); // Esto lanza la ventana de permisos del celular
+function seleccionarDia(dia) {
+    diaSeleccionado = dia;
+    document.getElementById('dia-titulo').innerText = "Cantos para el " + dia;
+    // Efecto visual de selección
+    const planilla = document.getElementById('planificador');
+    planilla.style.borderLeft = "10px solid #D4AF37";
 }
 
-// 2. Función que recibe los archivos una vez que das permiso
-function handleFiles(files) {
-    fileList.innerHTML = ""; // Limpiar lista anterior
-
-    if (files.length === 0) {
-        fileList.innerHTML = "<p>No seleccionaste nada.</p>";
+function compartirLista() {
+    if (!diaSeleccionado) {
+        alert("Por favor, selecciona primero un día de la semana.");
         return;
     }
 
-    Array.from(files).forEach(file => {
-        const reader = new FileReader();
-        
-        // Creamos la fila para cada archivo
-        const item = document.createElement('div');
-        item.className = 'file-item';
-        
-        const info = document.createElement('div');
-        info.innerHTML = `<strong>${file.name}</strong><br><small>${(file.size / 1024 / 1024).toFixed(2)} MB</small>`;
-        
-        const btn = document.createElement('button');
-        btn.className = 'btn-ver';
-        btn.innerText = "Abrir";
-        
-        // Al hacer clic en abrir, generamos una URL temporal para ver el archivo
-        btn.onclick = () => {
-            const fileURL = URL.createObjectURL(file);
-            window.open(fileURL);
-        };
+    const entrada = document.getElementById('entrada').value || "No asignado";
+    const piedad = document.getElementById('piedad').value || "No asignado";
+    const gloria = document.getElementById('gloria').value || "No asignado";
+    const salmo = document.getElementById('salmo').value || "No asignado";
+    const ofertorio = document.getElementById('ofertorio').value || "No asignado";
+    const santo = document.getElementById('santo').value || "No asignado";
+    const comunion = document.getElementById('comunion').value || "No asignado";
+    const salida = document.getElementById('salida').value || "No asignado";
+
+    const mensaje = `🎶 *Lista de Cantos - ${diaSeleccionado}* 🎶%0A%0A` +
+        `⛪ *Entrada:* ${entrada}%0A` +
+        `🙏 *Piedad:* ${piedad}%0A` +
+        `✨ *Gloria:* ${gloria}%0A` +
+        `📖 *Salmo:* ${salmo}%0A` +
+        `🍞 *Ofertorio:* ${ofertorio}%0A` +
+        `😇 *Santo:* ${santo}%0A` +
+        `🍷 *Comunión:* ${comunion}%0A` +
+        `🚶 *Salida:* ${salida}%0A%0A` +
+        `_¡Cantemos con alegría al Señor!_`;
+
+    // Abrir WhatsApp directamente con la lista armada
+    window.open(`https://wa.me/?text=${mensaje}`, '_blank');
+}        };
 
         item.appendChild(info);
         item.appendChild(btn);
