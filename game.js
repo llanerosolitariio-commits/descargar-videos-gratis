@@ -1,40 +1,46 @@
-// Variable para guardar la lista de archivos detectados
-let allFiles = [];
+const fileInput = document.getElementById('file-input');
+const fileList = document.getElementById('file-list');
 
-// Función para solicitar permiso al almacenamiento (Vital para la APK)
-async function getAccess() {
-    try {
-        // En una APK con permisos, esto listará los archivos del sistema
-        const display = document.getElementById('file-display');
-        display.innerHTML = "<p>Buscando archivos en el dispositivo...</p>";
-
-        // Simulamos la lectura del almacenamiento interno
-        // Nota: En la APK, el WebView debe habilitar "allowFileAccess"
-        console.log("Accediendo a /sdcard/...");
-        
-        // Aquí se conectaría con la API de Android para listar archivos
-        // Por ahora, generamos la lógica de filtrado
-    } catch (err) {
-        alert("Error de permisos: " + err);
-    }
+// 1. Función que "hace clic" en el sistema de archivos
+function openPicker(type) {
+    fileInput.accept = type; // Filtra por imagen, video o audio
+    fileInput.click(); // Esto lanza la ventana de permisos del celular
 }
 
-function filter(type) {
-    const title = document.getElementById('view-title');
-    const display = document.getElementById('file-display');
-    display.innerHTML = ""; // Limpiar pantalla
+// 2. Función que recibe los archivos una vez que das permiso
+function handleFiles(files) {
+    fileList.innerHTML = ""; // Limpiar lista anterior
 
-    title.innerText = "Viendo: " + type.toUpperCase();
+    if (files.length === 0) {
+        fileList.innerHTML = "<p>No seleccionaste nada.</p>";
+        return;
+    }
 
-    // Lógica para mostrar tarjetas de archivos
-    // En una implementación real, aquí mapeamos los archivos reales del móvil
-    for(let i=1; i<=6; i++) {
-        let card = document.createElement('div');
-        card.className = 'file-card';
-        card.innerHTML = `
-            <span>${type === 'image' ? '🖼️' : '📁'}</span>
-            <p>Archivo_${i}</p>
-            <small>Descargar</small>
+    Array.from(files).forEach(file => {
+        const reader = new FileReader();
+        
+        // Creamos la fila para cada archivo
+        const item = document.createElement('div');
+        item.className = 'file-item';
+        
+        const info = document.createElement('div');
+        info.innerHTML = `<strong>${file.name}</strong><br><small>${(file.size / 1024 / 1024).toFixed(2)} MB</small>`;
+        
+        const btn = document.createElement('button');
+        btn.className = 'btn-ver';
+        btn.innerText = "Abrir";
+        
+        // Al hacer clic en abrir, generamos una URL temporal para ver el archivo
+        btn.onclick = () => {
+            const fileURL = URL.createObjectURL(file);
+            window.open(fileURL);
+        };
+
+        item.appendChild(info);
+        item.appendChild(btn);
+        fileList.appendChild(item);
+    });
+}            <small>Descargar</small>
         `;
         display.appendChild(card);
     }
