@@ -3,23 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cantoral Litúrgico Pro</title>
+    <title>Cantoral Litúrgico Conectado</title>
+    
     <link rel="stylesheet" href="style.css">
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
 
     <header>
         <div class="header-content">
-            <i class="fas fa-church cross-icon"></i>
-            <h1>Cantoral Litúrgico</h1>
-            <p>Admin & Comunidad</p>
+            <i class="fas fa-cross cross-icon"></i>
+            <h1>Cantoral Parroquial</h1>
+            <p id="subtitulo">Sincronizado en tiempo real</p>
         </div>
     </header>
 
     <main class="container">
+        
         <section class="day-selector">
-            <div class="days-grid" id="days-nav">
+            <div class="days-grid">
                 <button onclick="cambiarDia('Domingo')">Dom</button>
                 <button onclick="cambiarDia('Lunes')">Lun</button>
                 <button onclick="cambiarDia('Martes')">Mar</button>
@@ -32,31 +35,38 @@
 
         <section class="plan-card">
             <h2 id="dia-titulo">Selecciona un día</h2>
+            
             <div id="lista-publica" class="lista-cantos">
-                </div>
+                <p style="text-align:center; color:#999;">Cargando alabanzas...</p>
+            </div>
+
             <button onclick="compartirWhatsApp()" class="btn-share">
-                <i class="fab fa-whatsapp"></i> Compartir por WhatsApp
+                <i class="fab fa-whatsapp"></i> Compartir Lista
             </button>
         </section>
 
-        <hr>
-
         <section class="admin-panel">
-            <h3><i class="fas fa-user-shield"></i> Panel de Administrador</h3>
-            <p class="hint">Carga los cantos y archivos aquí (Solo tú)</p>
-            
+            <h3><i class="fas fa-cog"></i> Cargar Nuevo Canto</h3>
             <div class="admin-grid">
-                <input type="text" id="nombre-canto" placeholder="Nombre del Canto (Ej: Entrada)">
+                <label>Nombre del momento:</label>
+                <input type="text" id="nombre-canto" placeholder="Ej: Canto de Entrada">
+                
+                <label>Partitura o Letra (PDF/Imagen):</label>
                 <input type="file" id="archivo-canto" accept="image/*,application/pdf">
-                <button onclick="subirCanto()" class="btn-admin">Guardar Canto</button>
+                
+                <button onclick="subirCanto()" class="btn-admin">
+                    <i class="fas fa-cloud-upload-alt"></i> SUBIR A LA NUBE
+                </button>
             </div>
         </section>
+
     </main>
 
-    <div id="modal-visor" class="modal" onclick="cerrarModal()">
-        <div class="modal-content" id="modal-body"></div>
-    </div>
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-storage-compat.js"></script>
 
     <script src="script.js"></script>
+
 </body>
 </html>
