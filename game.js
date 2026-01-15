@@ -1,40 +1,96 @@
-const canvas = document.getElementById('gameCanvas');
-const ctx = canvas.getContext('2d');
-
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-
-let score = 0;
-let ki = 100;
-
-// Configuración del Jugador (Goku)
-const goku = {
-    x: 50,
-    y: canvas.height / 2,
-    w: 60,
-    h: 80,
-    speed: 7,
-    color: '#FF9800' // Color representativo del traje
+// Diccionario de guías con lenguaje sencillo y directo
+const guias = {
+    'phone': {
+        titulo: "Para llamar por teléfono",
+        pasos: [
+            "1. Busca el círculo verde con un teléfono blanco.",
+            "2. Toca el dibujo de los números abajo.",
+            "3. Escribe el número de la persona.",
+            "4. Dale al botón verde grande para que empiece la llamada."
+        ]
+    },
+    'whatsapp': {
+        titulo: "Para enviar un mensaje",
+        pasos: [
+            "1. Busca el icono verde que tiene un globo blanco.",
+            "2. Toca el nombre de la persona a la que quieres escribir.",
+            "3. Toca el espacio en blanco de abajo donde dice 'Mensaje'.",
+            "4. Escribe y dale a la flechita verde para enviar."
+        ]
+    },
+    'camera': {
+        titulo: "Para sacar una foto",
+        pasos: [
+            "1. Busca el icono que parece una cámara negra.",
+            "2. Apunta con el móvil a lo que quieras fotografiar.",
+            "3. Toca el círculo blanco grande que aparece abajo en el medio.",
+            "4. ¡Listo! La foto se guardará sola."
+        ]
+    },
+    'photos': {
+        titulo: "Para ver tus fotos",
+        pasos: [
+            "1. Busca el icono de 'Galería' o 'Fotos' (suele ser una flor o un paisaje).",
+            "2. Verás todas tus fotos en cuadraditos pequeños.",
+            "3. Toca una foto para verla en grande.",
+            "4. Para volver atrás, usa la flecha de la esquina de abajo."
+        ]
+    },
+    'emergency': {
+        titulo: "Aviso de Emergencia",
+        pasos: [
+            "⚠️ Si te sientes mal o necesitas ayuda urgente:",
+            "1. Pulsa el botón rojo de abajo.",
+            "2. Esto enviará un mensaje avisando a tu familia.",
+            "3. Mantén la calma y espera a que te llamen."
+        ]
+    }
 };
 
-let bullets = [];
-let enemies = [];
-
-// Función para disparar Ki
-function shootKi() {
-    if (ki >= 10) {
-        bullets.push({ x: goku.x + goku.w, y: goku.y + goku.h / 2, size: 10, speed: 10 });
-        ki -= 10;
-        updateUI();
+// Función para mostrar la guía en pantalla
+function showStep(id) {
+    const box = document.getElementById('instruction-box');
+    const title = document.getElementById('step-title');
+    const text = document.getElementById('step-text');
+    
+    // Obtenemos la información del diccionario
+    const seleccion = guias[id];
+    
+    title.innerText = seleccion.titulo;
+    
+    // Convertimos los pasos en una lista fácil de leer
+    text.innerHTML = seleccion.pasos.map(paso => `<p>🔹 ${paso}</p>`).join('');
+    
+    // Mostramos el cuadro con una animación sencilla
+    box.style.display = 'block';
+    box.style.animation = 'fadeIn 0.5s';
+    
+    // Si el celular tiene activada la lectura de voz, lee el título
+    if ('speechSynthesis' in window) {
+        const mensaje = new SpeechSynthesisUtterance(seleccion.titulo);
+        mensaje.lang = 'es-ES';
+        window.speechSynthesis.speak(mensaje);
     }
+
+    // Desliza la pantalla hacia abajo para que vean la guía
+    window.scrollTo({
+        top: document.body.scrollHeight,
+        behavior: 'smooth'
+    });
 }
 
-function updateUI() {
-    document.getElementById('ki-bar').innerText = ki;
-    document.getElementById('score').innerText = score;
+// Función para cerrar el cuadro de ayuda
+function closeBox() {
+    const box = document.getElementById('instruction-box');
+    box.style.display = 'none';
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
 }
 
-// Generar enemigos (Saibamans o soldados de Freezer)
+// Registro de log para verificar que el sistema cargó bien
+console.log("Sistema de Guía para Mayores cargado correctamente.");// Generar enemigos (Saibamans o soldados de Freezer)
 function spawnEnemy() {
     enemies.push({
         x: canvas.width,
