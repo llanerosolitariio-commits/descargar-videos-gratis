@@ -1,193 +1,82 @@
-let diaActual = "Domingo";
-let baseDatos = JSON.parse(localStorage.getItem('cantoral_db')) || {};
-
-// Al cargar la página
-window.onload = () => {
-    cambiarDia('Domingo');
+// CONFIGURACIÓN DE TU PROYECTO (Pega lo que copiaste de Firebase aquí)
+const firebaseConfig = {
+  apiKey: "AIzaSyCWG34w1Ka5lNQpydF3Q2Zf1_mGys0AgIk",
+  authDomain: "cantoralparroquia-2f47d.firebaseapp.com",
+  projectId: "cantoralparroquia-2f47d",
+  storageBucket: "cantoralparroquia-2f47d.firebasestorage.app",
+  messagingSenderId: "439889740361",
+  appId: "T1:439889740361:web:7a25051f56d9cb7e597598"
 };
 
+// Inicializar Firebase
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const storage = firebase.storage();
+
+let diaActual = "Domingo";
+
+// Cambiar de día y escuchar cambios en tiempo real
 function cambiarDia(dia) {
     diaActual = dia;
     document.getElementById('dia-titulo').innerText = "Cantos: " + dia;
-    renderizarCantos();
+    
+    // Aquí le pedimos a Firebase que nos avise si algo cambia en ese día
+    db.collection("cantos").doc(diaActual).collection("lista")
+      .onSnapshot((querySnapshot) => {
+        const contenedor = document.getElementById('lista-publica');
+        contenedor.innerHTML = "";
+        
+        querySnapshot.forEach((doc) => {
+            const c = doc.data();
+            const div = document.createElement('div');
+            div.className = "item-canto";
+            div.innerHTML = `
+                <span><strong>${c.nombre}</strong></span>
+                ${c.url ? `<button class="btn-file" onclick="window.open('${c.url}')"><i class="fas fa-file-pdf"></i> Ver</button>` : ''}
+                <button onclick="borrarCanto('${doc.id}')" style="background:none; border:none; color:red; cursor:pointer;"><i class="fas fa-trash"></i></button>
+            `;
+            contenedor.appendChild(div);
+        });
+    });
 }
 
-// Lógica de Administrador: Guardar Canto y Archivo
-function subirCanto() {
+// Función para el Administrador (Subir a la nube)
+async function subirCanto() {
     const nombre = document.getElementById('nombre-canto').value;
-    const archivoInput = document.getElementById('archivo-canto');
+    const archivo = document.getElementById('archivo-canto').files[0];
     
-    if (!nombre) return alert("Escribe el nombre del momento (Ej: Entrada)");
+    if (!nombre) return alert("Escribe el nombre del canto");
 
-    const reader = new FileReader();
-    
-    if (archivoInput.files[0]) {
-        reader.readAsDataURL(archivoInput.files[0]);
-        reader.onload = function () {
-            guardarEnDB(nombre, reader.result, archivoInput.files[0].type);
-        };
-    } else {
-        guardarEnDB(nombre, null, null);
+    let urlFinal = null;
+
+    if (archivo) {
+        // 1. Subir archivo a Firebase Storage
+        const storageRef = storage.ref(`cantos/${diaActual}/${archivo.name}`);
+        await storageRef.put(archivo);
+        urlFinal = await storageRef.getDownloadURL();
     }
-}
 
-function guardarEnDB(nombre, fileData, type) {
-    if (!baseDatos[diaActual]) baseDatos[diaActual] = [];
-    
-    baseDatos[diaActual].push({
-        id: Date.now(),
+    // 2. Guardar datos en la base de datos Firestore
+    await db.collection("cantos").doc(diaActual).collection("lista").add({
         nombre: nombre,
-        archivo: fileData, // Base64 del PDF o Imagen
-        tipo: type
+        url: urlFinal,
+        fecha: new Date()
     });
 
-    localStorage.setItem('cantoral_db', JSON.stringify(baseDatos));
-    renderizarCantos();
     document.getElementById('nombre-canto').value = "";
+    document.getElementById('archivo-canto').value = "";
+    alert("¡Canto guardado para toda la comunidad!");
 }
 
-// Lógica de Público: Ver Cantos
-function renderizarCantos() {
-    const contenedor = document.getElementById('lista-publica');
-    contenedor.innerHTML = "";
-    
-    const cantos = baseDatos[diaActual] || [];
-    
-    if (cantos.length === 0) {
-        contenedor.innerHTML = "<p>No hay cantos cargados para este día.</p>";
-        return;
-    }
-
-    cantos.forEach(c => {
-        const div = document.createElement('div');
-        div.className = "item-canto";
-        div.innerHTML = `
-            <span><strong>${c.nombre}</strong></span>
-            ${c.archivo ? `<button class="btn-file" onclick="verArchivo('${c.id}')"><i class="fas fa-file-pdf"></i> Ver</button>` : ''}
-            <button onclick="borrarCanto('${c.id}')" style="background:none; border:none; color:red; cursor:pointer;"><i class="fas fa-trash"></i></button>
-        `;
-        contenedor.appendChild(div);
-    });
-}
-
-function verArchivo(id) {
-    const canto = baseDatos[diaActual].find(c => c.id == id);
-    const modal = document.getElementById('modal-visor');
-    const body = document.getElementById('modal-body');
-    
-    modal.style.display = "block";
-    
-    if (canto.tipo === "application/pdf") {
-        body.innerHTML = `<embed src="${canto.archivo}" type="application/pdf" width="100%" height="600px" />`;
-    } else {
-        body.innerHTML = `<img src="${canto.archivo}" style="width:100%" />`;
+// Borrar para todos
+async function borrarCanto(id) {
+    if(confirm("¿Quieres eliminar este canto para todos?")) {
+        await db.collection("cantos").doc(diaActual).collection("lista").doc(id).delete();
     }
 }
 
-function cerrarModal() {
-    document.getElementById('modal-visor').style.display = "none";
-}
-
-function borrarCanto(id) {
-    baseDatos[diaActual] = baseDatos[diaActual].filter(c => c.id != id);
-    localStorage.setItem('cantoral_db', JSON.stringify(baseDatos));
-    renderizarCantos();
-}
-
-function compartirWhatsApp() {
-    const cantos = baseDatos[diaActual] || [];
-    let texto = `*CANTORAL LITÚRGICO - ${diaActual.toUpperCase()}*%0A%0A`;
-    
-    cantos.forEach(c => {
-        texto += `• ${c.nombre}${c.archivo ? ' (📄 Ver en la web)' : ''}%0A`;
-    });
-    
-    window.open(`https://wa.me/?text=${texto}`, '_blank');
-}    // Abrir WhatsApp directamente con la lista armada
-    window.open(`https://wa.me/?text=${mensaje}`, '_blank');
-}        };
-
-        item.appendChild(info);
-        item.appendChild(btn);
-        fileList.appendChild(item);
-    });
-}            <small>Descargar</small>
-        `;
-        display.appendChild(card);
-    }
-}
-
-// Iniciar al cargar
-window.onload = getAccess;        ]
-    },
-    'emergency': {
-        titulo: "Aviso de Emergencia",
-        pasos: [
-            "⚠️ Si te sientes mal o necesitas ayuda urgente:",
-            "1. Pulsa el botón rojo de abajo.",
-            "2. Esto enviará un mensaje avisando a tu familia.",
-            "3. Mantén la calma y espera a que te llamen."
-        ]
-    }
-};
-
-// Función para mostrar la guía en pantalla
-function showStep(id) {
-    const box = document.getElementById('instruction-box');
-    const title = document.getElementById('step-title');
-    const text = document.getElementById('step-text');
-    
-    // Obtenemos la información del diccionario
-    const seleccion = guias[id];
-    
-    title.innerText = seleccion.titulo;
-    
-    // Convertimos los pasos en una lista fácil de leer
-    text.innerHTML = seleccion.pasos.map(paso => `<p>🔹 ${paso}</p>`).join('');
-    
-    // Mostramos el cuadro con una animación sencilla
-    box.style.display = 'block';
-    box.style.animation = 'fadeIn 0.5s';
-    
-    // Si el celular tiene activada la lectura de voz, lee el título
-    if ('speechSynthesis' in window) {
-        const mensaje = new SpeechSynthesisUtterance(seleccion.titulo);
-        mensaje.lang = 'es-ES';
-        window.speechSynthesis.speak(mensaje);
-    }
-
-    // Desliza la pantalla hacia abajo para que vean la guía
-    window.scrollTo({
-        top: document.body.scrollHeight,
-        behavior: 'smooth'
-    });
-}
-
-// Función para cerrar el cuadro de ayuda
-function closeBox() {
-    const box = document.getElementById('instruction-box');
-    box.style.display = 'none';
-    window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-    });
-}
-
-// Registro de log para verificar que el sistema cargó bien
-console.log("Sistema de Guía para Mayores cargado correctamente.");// Generar enemigos (Saibamans o soldados de Freezer)
-function spawnEnemy() {
-    enemies.push({
-        x: canvas.width,
-        y: Math.random() * (canvas.height - 50),
-        w: 40,
-        h: 40,
-        speed: 3 + Math.random() * 4
-    });
-}
-
-// Ciclo Principal de Juego
-function update() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+// Iniciar
+cambiarDia("Domingo");    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     // Dibujar Goku (Placeholder)
     ctx.fillStyle = goku.color;
