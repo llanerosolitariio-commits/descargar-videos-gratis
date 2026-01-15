@@ -3,38 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestor de Archivos Pro</title>
-    <style>
-        :root { --bg: #0f172a; --accent: #3b82f6; --card: #1e293b; }
-        body { font-family: sans-serif; background: var(--bg); color: white; margin: 0; padding: 20px; }
-        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 30px; }
-        .card { background: var(--card); padding: 20px; border-radius: 15px; text-align: center; cursor: pointer; border: 2px solid transparent; transition: 0.3s; }
-        .card:active { border-color: var(--accent); transform: scale(0.98); }
-        .card i { font-size: 40px; display: block; margin-bottom: 10px; }
-        #file-list { background: #000; border-radius: 10px; padding: 10px; min-height: 200px; }
-        .file-item { display: flex; align-items: center; justify-content: space-between; padding: 10px; border-bottom: 1px solid #333; }
-        .btn-ver { background: var(--accent); color: white; border: none; padding: 5px 10px; border-radius: 5px; }
-        #file-input { display: none; } /* Oculto, se activa con las tarjetas */
-    </style>
+    <title>Cantoral Litúrgico Parroquial</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
 
-    <h2>Mi Explorador Remoto</h2>
-    <p>Selecciona una categoría para acceder a tus archivos:</p>
+    <header>
+        <div class="header-content">
+            <i class="fas fa-cross cross-icon"></i>
+            <h1>Cantoral Litúrgico</h1>
+            <p>Unidos en la Oración y el Canto</p>
+        </div>
+    </header>
 
-    <div class="grid">
-        <div class="card" onclick="openPicker('image/*')"><i>🖼️</i>Imágenes</div>
-        <div class="card" onclick="openPicker('video/*')"><i>🎥</i>Videos</div>
-        <div class="card" onclick="openPicker('audio/*')"><i>🎵</i>Música/MP3</div>
-        <div class="card" onclick="openPicker('*/*')"><i>📁</i>Todo</div>
-    </div>
+    <main class="container">
+        <section class="day-selector">
+            <h3>Selecciona el Día</h3>
+            <div class="days-grid">
+                <button onclick="seleccionarDia('Domingo')">Dom</button>
+                <button onclick="seleccionarDia('Lunes')">Lun</button>
+                <button onclick="seleccionarDia('Martes')">Mar</button>
+                <button onclick="seleccionarDia('Miércoles')">Mié</button>
+                <button onclick="seleccionarDia('Jueves')">Jue</button>
+                <button onclick="seleccionarDia('Viernes')">Vie</button>
+                <button onclick="seleccionarDia('Sábado')">Sáb</button>
+            </div>
+        </section>
 
-    <input type="file" id="file-input" multiple onchange="handleFiles(this.files)">
+        <section id="planificador" class="plan-card">
+            <h2 id="dia-titulo">Día no seleccionado</h2>
+            
+            <div class="canto-entry">
+                <label>Canto de Entrada:</label>
+                <input type="text" id="entrada" placeholder="Nombre del canto...">
+            </div>
 
-    <h3>Contenido Seleccionado:</h3>
-    <div id="file-list">
-        <p style="color: #666; text-align: center;">No hay archivos seleccionados</p>
-    </div>
+            <div class="canto-entry">
+                <label>Señor Ten Piedad:</label>
+                <input type="text" id="piedad" placeholder="Versión...">
+            </div>
+
+            <div class="canto-entry">
+                <label>Gloria:</label>
+                <input type="text" id="gloria" placeholder="Versión...">
+            </div>
+
+            <div class="canto-entry">
+                <label>Salmo Responsorial:</label>
+                <input type="text" id="salmo" placeholder="Referencia...">
+            </div>
+
+            <div class="canto-entry">
+                <label>Ofertorio:</label>
+                <input type="text" id="ofertorio" placeholder="Nombre del canto...">
+            </div>
+
+            <div class="canto-entry">
+                <label>Santo:</label>
+                <input type="text" id="santo" placeholder="Versión...">
+            </div>
+
+            <div class="canto-entry">
+                <label>Comunión:</label>
+                <input type="text" id="comunion" placeholder="Nombre del canto...">
+            </div>
+
+            <div class="canto-entry">
+                <label>Canto Final:</label>
+                <input type="text" id="salida" placeholder="Nombre del canto...">
+            </div>
+
+            <div class="share-section">
+                <button onclick="compartirLista()" class="btn-share">
+                    <i class="fas fa-share-nodes"></i> Compartir con la Comunidad
+                </button>
+            </div>
+        </section>
+    </main>
 
     <script src="script.js"></script>
 </body>
