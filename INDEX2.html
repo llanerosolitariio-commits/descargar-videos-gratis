@@ -2,52 +2,70 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Dragon Ball Z - JS Edition</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía Fácil para Abuelos</title>
     <style>
-        body { margin: 0; background: #000; overflow: hidden; touch-action: none; }
-        canvas { display: block; background: url('https://imgur.com/gallery/sky-background-XvL5I') #87CEEB; background-size: cover; }
-        #ui { position: absolute; top: 10px; left: 10px; color: white; font-family: 'Arial'; font-weight: bold; text-shadow: 2px 2px #000; pointer-events: none; }
-        .controls { position: absolute; bottom: 20px; width: 100%; display: flex; justify-content: space-between; padding: 0 20px; box-sizing: border-box; }
-        .btn { width: 70px; height: 70px; background: rgba(255,255,255,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; border: 2px solid #fff; }
+        body { font-family: sans-serif; background: #f0f4f8; margin: 0; padding: 20px; color: #333; }
+        h1 { text-align: center; color: #2c3e50; font-size: 28px; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
+        .card { background: white; border-radius: 15px; padding: 20px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1); border: 2px solid #ddd; }
+        .card:active { background: #e2e8f0; transform: scale(0.95); }
+        .icon { font-size: 50px; display: block; margin-bottom: 10px; }
+        .label { font-size: 18px; font-weight: bold; }
+        #instruction-box { margin-top: 30px; padding: 20px; background: #fff; border-radius: 15px; display: none; border-left: 10px solid #3498db; }
+        .close-btn { background: #e74c3c; color: white; border: none; padding: 10px; border-radius: 5px; margin-top: 15px; width: 100%; font-size: 16px; }
     </style>
 </head>
 <body>
 
-    <div id="ui">KI: <span id="ki-bar">100</span>% | ENEMIGOS: <span id="score">0</span></div>
+    <h1>¿Qué quieres hacer hoy?</h1>
 
-    <canvas id="gameCanvas"></canvas>
-
-    <div class="controls">
-        <div class="btn" id="btn-up">↑</div>
-        <div class="btn" id="btn-shoot">KI</div>
-        <div class="btn" id="btn-down">↓</div>
+    <div class="grid">
+        <div class="card" onclick="showStep('phone')">
+            <span class="icon">📞</span>
+            <span class="label">Llamar a alguien</span>
+        </div>
+        <div class="card" onclick="showStep('whatsapp')">
+            <span class="icon">💬</span>
+            <span class="label">Enviar mensaje</span>
+        </div>
+        <div class="card" onclick="showStep('camera')">
+            <span class="icon">📸</span>
+            <span class="label">Sacar una foto</span>
+        </div>
+        <div class="card" onclick="showStep('photos')">
+            <span class="icon">🖼️</span>
+            <span class="label">Ver mis fotos</span>
+        </div>
     </div>
 
-    <script src="game.js"></script>
+    <div id="instruction-box">
+        <h2 id="step-title"></h2>
+        <p id="step-text" style="font-size: 20px; line-height: 1.5;"></p>
+        <button class="close-btn" onclick="closeBox()">Cerrar guía</button>
+    </div>
+
+    <script>
+        const guides = {
+            phone: { title: "Para llamar:", text: "1. Busca el icono verde con forma de teléfono.<br>2. Dale al dibujo de los números.<br>3. Escribe el número y dale al botón verde grande." },
+            whatsapp: { title: "Para enviar mensaje:", text: "1. Busca el icono verde con un globo blanco.<br>2. Toca el nombre de la persona.<br>3. Toca donde dice 'Escribir' y usa el teclado." },
+            camera: { title: "Para sacar fotos:", text: "1. Busca el icono que parece una cámara de fotos.<br>2. Mira la pantalla y apunta.<br>3. Toca el círculo blanco grande que está abajo." },
+            photos: { title: "Para ver tus fotos:", text: "1. Busca el icono de 'Galería' o 'Fotos'.<br>2. Toca cualquier cuadradito para ver la foto grande." }
+        };
+
+        function showStep(id) {
+            document.getElementById('step-title').innerText = guides[id].title;
+            document.getElementById('step-text').innerHTML = guides[id].text;
+            document.getElementById('instruction-box').style.display = 'block';
+            window.scrollTo(0, document.body.scrollHeight);
+        }
+
+        function closeBox() {
+            document.getElementById('instruction-box').style.display = 'none';
+        }
+    </script>
 </body>
-</html>        }
-        select {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 20px;
-            border-radius: 10px;
-            background-color: #333;
-            color: white;
-            border: none;
-        }
-        button {
-            width: 100%;
-            padding: 15px;
-            border-radius: 10px;
-            border: none;
-            background: linear-gradient(45deg, #ff0000, #b30000);
-            color: white;
-            font-weight: bold;
-            font-size: 16px;
-            cursor: pointer;
-        }
-        button:disabled { background: #555; }
+</html>        button:disabled { background: #555; }
         #status { margin-top: 20px; font-size: 14px; color: #aaa; }
         .spinner {
             display: none;
@@ -132,4 +150,5 @@
 
 </body>
 </html></html>
+
 
