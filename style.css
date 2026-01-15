@@ -2,39 +2,39 @@
     --oro: #D4AF37;
     --crema: #FFFDF5;
     --vino: #800000;
-    --texto: #2c3e50;
-    --blanco: #ffffff;
+    --verde: #2d5a27; /* Color litúrgico tiempo ordinario */
 }
 
-body {
-    background-color: var(--crema);
-    color: var(--texto);
-    font-family: 'Segoe UI', Arial, sans-serif;
-    margin: 0;
-    padding-bottom: 50px;
+/* ... (mantener estilos anteriores) ... */
+
+.admin-panel {
+    background: #f4f4f4;
+    padding: 20px;
+    border-radius: 15px;
+    border: 2px dashed var(--oro);
+    margin-top: 40px;
 }
 
-header {
-    background-color: var(--oro);
-    color: var(--blanco);
-    padding: 40px 20px;
-    text-align: center;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-}
+.admin-grid { display: flex; flex-direction: column; gap: 10px; }
 
-.cross-icon { font-size: 3rem; margin-bottom: 10px; opacity: 0.9; }
+.btn-admin { background: var(--verde); color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer; }
 
-.container { max-width: 600px; margin: auto; padding: 20px; }
-
-.days-grid {
+.item-canto {
+    background: white;
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 10px;
     display: flex;
     justify-content: space-between;
-    gap: 5px;
-    margin-bottom: 30px;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
-.days-grid button {
-    flex: 1;
+.btn-file { background: var(--oro); color: white; border: none; padding: 8px; border-radius: 5px; cursor: pointer; }
+
+/* Modal Visor */
+.modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; }
+.modal-content { max-width: 90%; max-height: 90%; margin: 5% auto; background: white; border-radius: 10px; overflow: hidden; }    flex: 1;
     padding: 10px 5px;
     border: 1px solid var(--oro);
     background: var(--blanco);
