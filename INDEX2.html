@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cantoral Litúrgico Parroquial</title>
+    <title>Cantoral Litúrgico Pro</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
@@ -11,76 +11,51 @@
 
     <header>
         <div class="header-content">
-            <i class="fas fa-cross cross-icon"></i>
+            <i class="fas fa-church cross-icon"></i>
             <h1>Cantoral Litúrgico</h1>
-            <p>Unidos en la Oración y el Canto</p>
+            <p>Admin & Comunidad</p>
         </div>
     </header>
 
     <main class="container">
         <section class="day-selector">
-            <h3>Selecciona el Día</h3>
-            <div class="days-grid">
-                <button onclick="seleccionarDia('Domingo')">Dom</button>
-                <button onclick="seleccionarDia('Lunes')">Lun</button>
-                <button onclick="seleccionarDia('Martes')">Mar</button>
-                <button onclick="seleccionarDia('Miércoles')">Mié</button>
-                <button onclick="seleccionarDia('Jueves')">Jue</button>
-                <button onclick="seleccionarDia('Viernes')">Vie</button>
-                <button onclick="seleccionarDia('Sábado')">Sáb</button>
+            <div class="days-grid" id="days-nav">
+                <button onclick="cambiarDia('Domingo')">Dom</button>
+                <button onclick="cambiarDia('Lunes')">Lun</button>
+                <button onclick="cambiarDia('Martes')">Mar</button>
+                <button onclick="cambiarDia('Miércoles')">Mié</button>
+                <button onclick="cambiarDia('Jueves')">Jue</button>
+                <button onclick="cambiarDia('Viernes')">Vie</button>
+                <button onclick="cambiarDia('Sábado')">Sáb</button>
             </div>
         </section>
 
-        <section id="planificador" class="plan-card">
-            <h2 id="dia-titulo">Día no seleccionado</h2>
+        <section class="plan-card">
+            <h2 id="dia-titulo">Selecciona un día</h2>
+            <div id="lista-publica" class="lista-cantos">
+                </div>
+            <button onclick="compartirWhatsApp()" class="btn-share">
+                <i class="fab fa-whatsapp"></i> Compartir por WhatsApp
+            </button>
+        </section>
+
+        <hr>
+
+        <section class="admin-panel">
+            <h3><i class="fas fa-user-shield"></i> Panel de Administrador</h3>
+            <p class="hint">Carga los cantos y archivos aquí (Solo tú)</p>
             
-            <div class="canto-entry">
-                <label>Canto de Entrada:</label>
-                <input type="text" id="entrada" placeholder="Nombre del canto...">
-            </div>
-
-            <div class="canto-entry">
-                <label>Señor Ten Piedad:</label>
-                <input type="text" id="piedad" placeholder="Versión...">
-            </div>
-
-            <div class="canto-entry">
-                <label>Gloria:</label>
-                <input type="text" id="gloria" placeholder="Versión...">
-            </div>
-
-            <div class="canto-entry">
-                <label>Salmo Responsorial:</label>
-                <input type="text" id="salmo" placeholder="Referencia...">
-            </div>
-
-            <div class="canto-entry">
-                <label>Ofertorio:</label>
-                <input type="text" id="ofertorio" placeholder="Nombre del canto...">
-            </div>
-
-            <div class="canto-entry">
-                <label>Santo:</label>
-                <input type="text" id="santo" placeholder="Versión...">
-            </div>
-
-            <div class="canto-entry">
-                <label>Comunión:</label>
-                <input type="text" id="comunion" placeholder="Nombre del canto...">
-            </div>
-
-            <div class="canto-entry">
-                <label>Canto Final:</label>
-                <input type="text" id="salida" placeholder="Nombre del canto...">
-            </div>
-
-            <div class="share-section">
-                <button onclick="compartirLista()" class="btn-share">
-                    <i class="fas fa-share-nodes"></i> Compartir con la Comunidad
-                </button>
+            <div class="admin-grid">
+                <input type="text" id="nombre-canto" placeholder="Nombre del Canto (Ej: Entrada)">
+                <input type="file" id="archivo-canto" accept="image/*,application/pdf">
+                <button onclick="subirCanto()" class="btn-admin">Guardar Canto</button>
             </div>
         </section>
     </main>
+
+    <div id="modal-visor" class="modal" onclick="cerrarModal()">
+        <div class="modal-content" id="modal-body"></div>
+    </div>
 
     <script src="script.js"></script>
 </body>
