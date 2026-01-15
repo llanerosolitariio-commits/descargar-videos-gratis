@@ -3,66 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Guía Fácil para Abuelos</title>
+    <title>Mi Celular Remoto - Gestor Total</title>
     <style>
-        body { font-family: sans-serif; background: #f0f4f8; margin: 0; padding: 20px; color: #333; }
-        h1 { text-align: center; color: #2c3e50; font-size: 28px; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
-        .card { background: white; border-radius: 15px; padding: 20px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1); border: 2px solid #ddd; }
-        .card:active { background: #e2e8f0; transform: scale(0.95); }
-        .icon { font-size: 50px; display: block; margin-bottom: 10px; }
-        .label { font-size: 18px; font-weight: bold; }
-        #instruction-box { margin-top: 30px; padding: 20px; background: #fff; border-radius: 15px; display: none; border-left: 10px solid #3498db; }
-        .close-btn { background: #e74c3c; color: white; border: none; padding: 10px; border-radius: 5px; margin-top: 15px; width: 100%; font-size: 16px; }
+        :root { --bg: #0f172a; --card: #1e293b; --accent: #3b82f6; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: white; margin: 0; display: flex; }
+        
+        /* Sidebar */
+        nav { width: 250px; background: #000; height: 100vh; padding: 20px; border-right: 1px solid #333; }
+        nav h2 { color: var(--accent); font-size: 1.2rem; }
+        .menu-item { padding: 12px; cursor: pointer; border-radius: 8px; transition: 0.3s; margin-bottom: 5px; }
+        .menu-item:hover { background: var(--card); }
+
+        /* Main Content */
+        main { flex-grow: 1; padding: 30px; overflow-y: auto; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 20px; }
+        .file-card { background: var(--card); padding: 15px; border-radius: 12px; text-align: center; border: 1px solid #333; }
+        .file-card i { font-size: 40px; display: block; margin-bottom: 10px; }
+        
+        .status-bar { position: fixed; bottom: 20px; right: 20px; background: var(--accent); padding: 10px 20px; border-radius: 50px; font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <h1>¿Qué quieres hacer hoy?</h1>
+    <nav>
+        <h2>MOVIL EXPLORER</h2>
+        <div class="menu-item" onclick="filter('image')">🖼️ Imágenes</div>
+        <div class="menu-item" onclick="filter('video')">🎥 Videos</div>
+        <div class="menu-item" onclick="filter('audio')">🎵 Música / MP3</div>
+        <div class="menu-item" onclick="filter('application')">📱 Aplicaciones</div>
+        <div class="menu-item" onclick="filter('all')">📂 Todos los Archivos</div>
+    </nav>
 
-    <div class="grid">
-        <div class="card" onclick="showStep('phone')">
-            <span class="icon">📞</span>
-            <span class="label">Llamar a alguien</span>
-        </div>
-        <div class="card" onclick="showStep('whatsapp')">
-            <span class="icon">💬</span>
-            <span class="label">Enviar mensaje</span>
-        </div>
-        <div class="card" onclick="showStep('camera')">
-            <span class="icon">📸</span>
-            <span class="label">Sacar una foto</span>
-        </div>
-        <div class="card" onclick="showStep('photos')">
-            <span class="icon">🖼️</span>
-            <span class="label">Ver mis fotos</span>
-        </div>
-    </div>
+    <main>
+        <h1 id="view-title">Todos los Archivos</h1>
+        <div class="grid" id="file-display">
+            </div>
+    </main>
 
-    <div id="instruction-box">
-        <h2 id="step-title"></h2>
-        <p id="step-text" style="font-size: 20px; line-height: 1.5;"></p>
-        <button class="close-btn" onclick="closeBox()">Cerrar guía</button>
-    </div>
+    <div class="status-bar">Celular Conectado: <span id="ip-address">192.168.1.XX</span></div>
 
-    <script>
-        const guides = {
-            phone: { title: "Para llamar:", text: "1. Busca el icono verde con forma de teléfono.<br>2. Dale al dibujo de los números.<br>3. Escribe el número y dale al botón verde grande." },
-            whatsapp: { title: "Para enviar mensaje:", text: "1. Busca el icono verde con un globo blanco.<br>2. Toca el nombre de la persona.<br>3. Toca donde dice 'Escribir' y usa el teclado." },
-            camera: { title: "Para sacar fotos:", text: "1. Busca el icono que parece una cámara de fotos.<br>2. Mira la pantalla y apunta.<br>3. Toca el círculo blanco grande que está abajo." },
-            photos: { title: "Para ver tus fotos:", text: "1. Busca el icono de 'Galería' o 'Fotos'.<br>2. Toca cualquier cuadradito para ver la foto grande." }
-        };
-
-        function showStep(id) {
-            document.getElementById('step-title').innerText = guides[id].title;
-            document.getElementById('step-text').innerHTML = guides[id].text;
-            document.getElementById('instruction-box').style.display = 'block';
-            window.scrollTo(0, document.body.scrollHeight);
-        }
-
-        function closeBox() {
-            document.getElementById('instruction-box').style.display = 'none';
-        }
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
