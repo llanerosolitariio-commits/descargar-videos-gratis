@@ -1,0 +1,87 @@
+:root {
+    --oro: #D4AF37;
+    --crema: #FFFDF5;
+    --vino: #800000;
+    --texto: #2c3e50;
+    --blanco: #ffffff;
+}
+
+body {
+    background-color: var(--crema);
+    color: var(--texto);
+    font-family: 'Segoe UI', Arial, sans-serif;
+    margin: 0;
+    padding-bottom: 50px;
+}
+
+header {
+    background-color: var(--oro);
+    color: var(--blanco);
+    padding: 40px 20px;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.cross-icon { font-size: 3rem; margin-bottom: 10px; opacity: 0.9; }
+
+.container { max-width: 600px; margin: auto; padding: 20px; }
+
+.days-grid {
+    display: flex;
+    justify-content: space-between;
+    gap: 5px;
+    margin-bottom: 30px;
+}
+
+.days-grid button {
+    flex: 1;
+    padding: 10px 5px;
+    border: 1px solid var(--oro);
+    background: var(--blanco);
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.days-grid button:hover { background: var(--oro); color: white; }
+
+.plan-card {
+    background: var(--blanco);
+    padding: 25px;
+    border-radius: 20px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+}
+
+.canto-entry { margin-bottom: 20px; text-align: left; }
+
+label {
+    display: block;
+    font-weight: bold;
+    color: var(--vino);
+    margin-bottom: 5px;
+    font-size: 0.9rem;
+}
+
+input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-sizing: border-box;
+}
+
+.btn-share {
+    background-color: var(--vino);
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 50px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 20px;
+    transition: transform 0.2s;
+}
+
+.btn-share:active { transform: scale(0.95); }
