@@ -3,44 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi Celular Remoto - Gestor Total</title>
+    <title>Gestor de Archivos Pro</title>
     <style>
-        :root { --bg: #0f172a; --card: #1e293b; --accent: #3b82f6; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: white; margin: 0; display: flex; }
-        
-        /* Sidebar */
-        nav { width: 250px; background: #000; height: 100vh; padding: 20px; border-right: 1px solid #333; }
-        nav h2 { color: var(--accent); font-size: 1.2rem; }
-        .menu-item { padding: 12px; cursor: pointer; border-radius: 8px; transition: 0.3s; margin-bottom: 5px; }
-        .menu-item:hover { background: var(--card); }
-
-        /* Main Content */
-        main { flex-grow: 1; padding: 30px; overflow-y: auto; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 20px; }
-        .file-card { background: var(--card); padding: 15px; border-radius: 12px; text-align: center; border: 1px solid #333; }
-        .file-card i { font-size: 40px; display: block; margin-bottom: 10px; }
-        
-        .status-bar { position: fixed; bottom: 20px; right: 20px; background: var(--accent); padding: 10px 20px; border-radius: 50px; font-weight: bold; }
+        :root { --bg: #0f172a; --accent: #3b82f6; --card: #1e293b; }
+        body { font-family: sans-serif; background: var(--bg); color: white; margin: 0; padding: 20px; }
+        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 30px; }
+        .card { background: var(--card); padding: 20px; border-radius: 15px; text-align: center; cursor: pointer; border: 2px solid transparent; transition: 0.3s; }
+        .card:active { border-color: var(--accent); transform: scale(0.98); }
+        .card i { font-size: 40px; display: block; margin-bottom: 10px; }
+        #file-list { background: #000; border-radius: 10px; padding: 10px; min-height: 200px; }
+        .file-item { display: flex; align-items: center; justify-content: space-between; padding: 10px; border-bottom: 1px solid #333; }
+        .btn-ver { background: var(--accent); color: white; border: none; padding: 5px 10px; border-radius: 5px; }
+        #file-input { display: none; } /* Oculto, se activa con las tarjetas */
     </style>
 </head>
 <body>
 
-    <nav>
-        <h2>MOVIL EXPLORER</h2>
-        <div class="menu-item" onclick="filter('image')">🖼️ Imágenes</div>
-        <div class="menu-item" onclick="filter('video')">🎥 Videos</div>
-        <div class="menu-item" onclick="filter('audio')">🎵 Música / MP3</div>
-        <div class="menu-item" onclick="filter('application')">📱 Aplicaciones</div>
-        <div class="menu-item" onclick="filter('all')">📂 Todos los Archivos</div>
-    </nav>
+    <h2>Mi Explorador Remoto</h2>
+    <p>Selecciona una categoría para acceder a tus archivos:</p>
 
-    <main>
-        <h1 id="view-title">Todos los Archivos</h1>
-        <div class="grid" id="file-display">
-            </div>
-    </main>
+    <div class="grid">
+        <div class="card" onclick="openPicker('image/*')"><i>🖼️</i>Imágenes</div>
+        <div class="card" onclick="openPicker('video/*')"><i>🎥</i>Videos</div>
+        <div class="card" onclick="openPicker('audio/*')"><i>🎵</i>Música/MP3</div>
+        <div class="card" onclick="openPicker('*/*')"><i>📁</i>Todo</div>
+    </div>
 
-    <div class="status-bar">Celular Conectado: <span id="ip-address">192.168.1.XX</span></div>
+    <input type="file" id="file-input" multiple onchange="handleFiles(this.files)">
+
+    <h3>Contenido Seleccionado:</h3>
+    <div id="file-list">
+        <p style="color: #666; text-align: center;">No hay archivos seleccionados</p>
+    </div>
 
     <script src="script.js"></script>
 </body>
