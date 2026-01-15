@@ -1,40 +1,109 @@
-let diaSeleccionado = "";
+let diaActual = "Domingo";
+let baseDatos = JSON.parse(localStorage.getItem('cantoral_db')) || {};
 
-function seleccionarDia(dia) {
-    diaSeleccionado = dia;
-    document.getElementById('dia-titulo').innerText = "Cantos para el " + dia;
-    // Efecto visual de selección
-    const planilla = document.getElementById('planificador');
-    planilla.style.borderLeft = "10px solid #D4AF37";
+// Al cargar la página
+window.onload = () => {
+    cambiarDia('Domingo');
+};
+
+function cambiarDia(dia) {
+    diaActual = dia;
+    document.getElementById('dia-titulo').innerText = "Cantos: " + dia;
+    renderizarCantos();
 }
 
-function compartirLista() {
-    if (!diaSeleccionado) {
-        alert("Por favor, selecciona primero un día de la semana.");
+// Lógica de Administrador: Guardar Canto y Archivo
+function subirCanto() {
+    const nombre = document.getElementById('nombre-canto').value;
+    const archivoInput = document.getElementById('archivo-canto');
+    
+    if (!nombre) return alert("Escribe el nombre del momento (Ej: Entrada)");
+
+    const reader = new FileReader();
+    
+    if (archivoInput.files[0]) {
+        reader.readAsDataURL(archivoInput.files[0]);
+        reader.onload = function () {
+            guardarEnDB(nombre, reader.result, archivoInput.files[0].type);
+        };
+    } else {
+        guardarEnDB(nombre, null, null);
+    }
+}
+
+function guardarEnDB(nombre, fileData, type) {
+    if (!baseDatos[diaActual]) baseDatos[diaActual] = [];
+    
+    baseDatos[diaActual].push({
+        id: Date.now(),
+        nombre: nombre,
+        archivo: fileData, // Base64 del PDF o Imagen
+        tipo: type
+    });
+
+    localStorage.setItem('cantoral_db', JSON.stringify(baseDatos));
+    renderizarCantos();
+    document.getElementById('nombre-canto').value = "";
+}
+
+// Lógica de Público: Ver Cantos
+function renderizarCantos() {
+    const contenedor = document.getElementById('lista-publica');
+    contenedor.innerHTML = "";
+    
+    const cantos = baseDatos[diaActual] || [];
+    
+    if (cantos.length === 0) {
+        contenedor.innerHTML = "<p>No hay cantos cargados para este día.</p>";
         return;
     }
 
-    const entrada = document.getElementById('entrada').value || "No asignado";
-    const piedad = document.getElementById('piedad').value || "No asignado";
-    const gloria = document.getElementById('gloria').value || "No asignado";
-    const salmo = document.getElementById('salmo').value || "No asignado";
-    const ofertorio = document.getElementById('ofertorio').value || "No asignado";
-    const santo = document.getElementById('santo').value || "No asignado";
-    const comunion = document.getElementById('comunion').value || "No asignado";
-    const salida = document.getElementById('salida').value || "No asignado";
+    cantos.forEach(c => {
+        const div = document.createElement('div');
+        div.className = "item-canto";
+        div.innerHTML = `
+            <span><strong>${c.nombre}</strong></span>
+            ${c.archivo ? `<button class="btn-file" onclick="verArchivo('${c.id}')"><i class="fas fa-file-pdf"></i> Ver</button>` : ''}
+            <button onclick="borrarCanto('${c.id}')" style="background:none; border:none; color:red; cursor:pointer;"><i class="fas fa-trash"></i></button>
+        `;
+        contenedor.appendChild(div);
+    });
+}
 
-    const mensaje = `🎶 *Lista de Cantos - ${diaSeleccionado}* 🎶%0A%0A` +
-        `⛪ *Entrada:* ${entrada}%0A` +
-        `🙏 *Piedad:* ${piedad}%0A` +
-        `✨ *Gloria:* ${gloria}%0A` +
-        `📖 *Salmo:* ${salmo}%0A` +
-        `🍞 *Ofertorio:* ${ofertorio}%0A` +
-        `😇 *Santo:* ${santo}%0A` +
-        `🍷 *Comunión:* ${comunion}%0A` +
-        `🚶 *Salida:* ${salida}%0A%0A` +
-        `_¡Cantemos con alegría al Señor!_`;
+function verArchivo(id) {
+    const canto = baseDatos[diaActual].find(c => c.id == id);
+    const modal = document.getElementById('modal-visor');
+    const body = document.getElementById('modal-body');
+    
+    modal.style.display = "block";
+    
+    if (canto.tipo === "application/pdf") {
+        body.innerHTML = `<embed src="${canto.archivo}" type="application/pdf" width="100%" height="600px" />`;
+    } else {
+        body.innerHTML = `<img src="${canto.archivo}" style="width:100%" />`;
+    }
+}
 
-    // Abrir WhatsApp directamente con la lista armada
+function cerrarModal() {
+    document.getElementById('modal-visor').style.display = "none";
+}
+
+function borrarCanto(id) {
+    baseDatos[diaActual] = baseDatos[diaActual].filter(c => c.id != id);
+    localStorage.setItem('cantoral_db', JSON.stringify(baseDatos));
+    renderizarCantos();
+}
+
+function compartirWhatsApp() {
+    const cantos = baseDatos[diaActual] || [];
+    let texto = `*CANTORAL LITÚRGICO - ${diaActual.toUpperCase()}*%0A%0A`;
+    
+    cantos.forEach(c => {
+        texto += `• ${c.nombre}${c.archivo ? ' (📄 Ver en la web)' : ''}%0A`;
+    });
+    
+    window.open(`https://wa.me/?text=${texto}`, '_blank');
+}    // Abrir WhatsApp directamente con la lista armada
     window.open(`https://wa.me/?text=${mensaje}`, '_blank');
 }        };
 
