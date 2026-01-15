@@ -1,40 +1,47 @@
-// Diccionario de guías con lenguaje sencillo y directo
-const guias = {
-    'phone': {
-        titulo: "Para llamar por teléfono",
-        pasos: [
-            "1. Busca el círculo verde con un teléfono blanco.",
-            "2. Toca el dibujo de los números abajo.",
-            "3. Escribe el número de la persona.",
-            "4. Dale al botón verde grande para que empiece la llamada."
-        ]
-    },
-    'whatsapp': {
-        titulo: "Para enviar un mensaje",
-        pasos: [
-            "1. Busca el icono verde que tiene un globo blanco.",
-            "2. Toca el nombre de la persona a la que quieres escribir.",
-            "3. Toca el espacio en blanco de abajo donde dice 'Mensaje'.",
-            "4. Escribe y dale a la flechita verde para enviar."
-        ]
-    },
-    'camera': {
-        titulo: "Para sacar una foto",
-        pasos: [
-            "1. Busca el icono que parece una cámara negra.",
-            "2. Apunta con el móvil a lo que quieras fotografiar.",
-            "3. Toca el círculo blanco grande que aparece abajo en el medio.",
-            "4. ¡Listo! La foto se guardará sola."
-        ]
-    },
-    'photos': {
-        titulo: "Para ver tus fotos",
-        pasos: [
-            "1. Busca el icono de 'Galería' o 'Fotos' (suele ser una flor o un paisaje).",
-            "2. Verás todas tus fotos en cuadraditos pequeños.",
-            "3. Toca una foto para verla en grande.",
-            "4. Para volver atrás, usa la flecha de la esquina de abajo."
-        ]
+// Variable para guardar la lista de archivos detectados
+let allFiles = [];
+
+// Función para solicitar permiso al almacenamiento (Vital para la APK)
+async function getAccess() {
+    try {
+        // En una APK con permisos, esto listará los archivos del sistema
+        const display = document.getElementById('file-display');
+        display.innerHTML = "<p>Buscando archivos en el dispositivo...</p>";
+
+        // Simulamos la lectura del almacenamiento interno
+        // Nota: En la APK, el WebView debe habilitar "allowFileAccess"
+        console.log("Accediendo a /sdcard/...");
+        
+        // Aquí se conectaría con la API de Android para listar archivos
+        // Por ahora, generamos la lógica de filtrado
+    } catch (err) {
+        alert("Error de permisos: " + err);
+    }
+}
+
+function filter(type) {
+    const title = document.getElementById('view-title');
+    const display = document.getElementById('file-display');
+    display.innerHTML = ""; // Limpiar pantalla
+
+    title.innerText = "Viendo: " + type.toUpperCase();
+
+    // Lógica para mostrar tarjetas de archivos
+    // En una implementación real, aquí mapeamos los archivos reales del móvil
+    for(let i=1; i<=6; i++) {
+        let card = document.createElement('div');
+        card.className = 'file-card';
+        card.innerHTML = `
+            <span>${type === 'image' ? '🖼️' : '📁'}</span>
+            <p>Archivo_${i}</p>
+            <small>Descargar</small>
+        `;
+        display.appendChild(card);
+    }
+}
+
+// Iniciar al cargar
+window.onload = getAccess;        ]
     },
     'emergency': {
         titulo: "Aviso de Emergencia",
